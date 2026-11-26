@@ -1,12 +1,8 @@
 ## Rol 
-Actúa como desarrollador frontend senior que escribe código simple, claro y fácil de 
-entender para alguien que está empezando a programar. 
+Actúa como desarrollador frontend senior que escribe código simple, claro y fácil de entender para alguien que está empezando a programar. 
  
 ## Contexto 
-Quiero crear desde cero "Diario de Estudio", una web para registrar mis sesiones de 
-estudio y motivarme viendo mi racha de días seguidos estudiando. Esta es la primera 
-versión y tiene que ser muy simple. La web se construirá poco a poco, así que ahora solo 
-necesito una base limpia que funcione a la primera. 
+Quiero crear desde cero "Diario de Estudio", una web para registrar mis sesiones de estudio y motivarme viendo mi racha de días seguidos estudiando. Esta es la primera versión y tiene que ser muy simple. La web se construirá poco a poco, así que ahora solo necesito una base limpia que funcione a la primera. 
  
 ## Tarea 
 Crea la web con estas funcionalidades: 
@@ -22,8 +18,7 @@ Crea la web con estas funcionalidades:
 Racha: 
 - Un día cuenta si tiene al menos una sesión. 
 - La racha son los días consecutivos con sesión que terminan hoy. 
-- Si hoy todavía no he estudiado pero ayer sí, la racha sigue viva: no se rompe hasta que 
-termina el día. 
+- Si hoy todavía no he estudiado pero ayer sí, la racha sigue viva: no se rompe hasta que termina el día. 
 - Usa siempre la fecha local del usuario, nunca UTC. 
  
 Técnicas: 

@@ -8,6 +8,7 @@ const campoMinutos = document.getElementById("minutos");
 const mensajeError = document.getElementById("error");
 const rachaNumero = document.getElementById("racha");
 const rachaTexto = document.getElementById("racha-texto");
+const mejorRachaNumero = document.getElementById("mejor-racha");
 const lista = document.getElementById("lista-sesiones");
 const vacio = document.getElementById("vacio");
 
@@ -44,10 +45,25 @@ function formatearFecha(texto) {
   }).format(textoAFecha(texto));
 }
 
-// --- Racha ---
+// --- Rachas ---
+
+// Conjunto de días ("AAAA-MM-DD") con al menos una sesión.
+// Ignoramos las fechas con formato incorrecto para que un dato
+// corrupto no rompa los cálculos.
+function obtenerDiasConSesion() {
+  const dias = new Set();
+
+  for (const sesion of sesiones) {
+    if (typeof sesion.fecha === "string" && /^\d{4}-\d{2}-\d{2}$/.test(sesion.fecha)) {
+      dias.add(sesion.fecha);
+    }
+  }
+
+  return dias;
+}
 
 function calcularRacha() {
-  const diasConSesion = new Set(sesiones.map((sesion) => sesion.fecha));
+  const diasConSesion = obtenerDiasConSesion();
 
   // Empezamos en hoy. Si hoy aún no hay sesión, empezamos en ayer:
   // la racha sigue viva hasta que termine el día.
@@ -63,6 +79,47 @@ function calcularRacha() {
   }
 
   return racha;
+}
+
+// Mejor racha: el máximo de días consecutivos con al menos una sesión.
+// Se calcula al vuelo y no se guarda, así nunca se desincroniza.
+function calcularMejorRacha() {
+  const dias = [...obtenerDiasConSesion()].sort();
+  const hoy = fechaDeHoy();
+
+  let mejor = 0;
+  let racha = 0;
+  let diaAnterior = null;
+
+  for (const dia of dias) {
+    // Las fechas futuras todavía no cuentan.
+    if (dia > hoy) {
+      continue;
+    }
+
+    if (diaAnterior !== null && esDiaSiguiente(diaAnterior, dia)) {
+      racha++;
+    } else {
+      racha = 1;
+    }
+
+    if (racha > mejor) {
+      mejor = racha;
+    }
+
+    diaAnterior = dia;
+  }
+
+  return mejor;
+}
+
+// ¿El día "dia" es exactamente el siguiente a "diaAnterior"?
+// Sumamos un día con setDate para que funcione también con los
+// cambios de hora, en los que un día no dura 24 horas.
+function esDiaSiguiente(diaAnterior, dia) {
+  const fecha = textoAFecha(diaAnterior);
+  fecha.setDate(fecha.getDate() + 1);
+  return fechaATexto(fecha) === dia;
 }
 
 // --- Almacenamiento ---
@@ -91,6 +148,7 @@ function render() {
   const racha = calcularRacha();
   rachaNumero.textContent = racha;
   rachaTexto.textContent = racha === 1 ? "día seguido" : "días seguidos";
+  mejorRachaNumero.textContent = calcularMejorRacha();
 
   // De la más reciente a la más antigua. Si dos sesiones son del mismo
   // día, primero la que se añadió más tarde.
