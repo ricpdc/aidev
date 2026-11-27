@@ -80,6 +80,12 @@ h2 {
   opacity: 0.92;
 }
 
+.racha-mes {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  opacity: 0.92;
+}
+
 /* Tarjetas */
 
 .tarjeta {

@@ -10,6 +10,7 @@ const rachaNumero = document.getElementById("racha");
 const rachaTexto = document.getElementById("racha-texto");
 const mejorRachaNumero = document.getElementById("mejor-racha");
 const minutosSemana = document.getElementById("minutos-semana");
+const minutosMes = document.getElementById("minutos-mes");
 const lista = document.getElementById("lista-sesiones");
 const vacio = document.getElementById("vacio");
 const tituloFormulario = document.getElementById("titulo-formulario");
@@ -184,6 +185,33 @@ function formatearDuracion(total) {
   return `${horas} h ${minutos} min`;
 }
 
+// --- Total del mes ---
+
+function calcularMinutosMes() {
+  const hoy = fechaDeHoy();
+  const mes = hoy.slice(0, 7); // "AAAA-MM"
+
+  let total = 0;
+
+  for (const sesion of sesiones) {
+    if (typeof sesion.fecha !== "string" || sesion.fecha.slice(0, 7) !== mes) {
+      continue;
+    }
+
+    // Mismo criterio que en la semana: el futuro todavía no cuenta.
+    if (sesion.fecha > hoy) {
+      continue;
+    }
+
+    const minutos = Number(sesion.minutos);
+    if (Number.isFinite(minutos)) {
+      total += minutos;
+    }
+  }
+
+  return total;
+}
+
 // --- Almacenamiento ---
 
 function cargarSesiones() {
@@ -212,6 +240,7 @@ function render() {
   rachaTexto.textContent = racha === 1 ? "día seguido" : "días seguidos";
   mejorRachaNumero.textContent = calcularMejorRacha();
   minutosSemana.textContent = formatearDuracion(calcularMinutosSemana());
+  minutosMes.textContent = formatearDuracion(calcularMinutosMes());
 
   // De la más reciente a la más antigua. Si dos sesiones son del mismo
   // día, primero la que se añadió más tarde.

@@ -29,6 +29,7 @@ Web estática para registrar sesiones de estudio y motivarse viendo la racha de 
 - Varias sesiones el mismo día cuentan como un solo día. Las fechas futuras no suman.
 - Mejor racha = máximo de días consecutivos con sesión. Se calcula al vuelo desde las sesiones (no se guarda), incluye la racha activa y excluye las fechas futuras.
 - Total semanal = suma de minutos de las sesiones de la semana actual (lunes a domingo, hora local). Se calcula al vuelo, no se guarda, excluye fechas futuras y se muestra en horas y minutos.
+- Total mensual = suma de minutos de las sesiones del mes natural actual (hora local). Se calcula al vuelo, no se guarda, excluye fechas futuras y se muestra en horas y minutos.
 
 ## Forma de trabajar 
 - Haz solo lo que se pide: no añadas funcionalidades por tu cuenta. 
@@ -53,4 +54,5 @@ Web estática para registrar sesiones de estudio y motivarse viendo la racha de 
 - Comprobar que «Mejor racha» coincide con el tramo más largo y que una fecha futura no la aumenta.
 - Probar editar (incluido cancelar) y borrar (aceptar y rechazar); las dos rachas deben recalcularse.
 - Comprobar que «Esta semana» incluye lunes y domingo, ignora fechas futuras y se actualiza al editar o borrar.
+- Comprobar que «Este mes» incluye el día 1 y el último del mes, cambia al pasar de mes e ignora fechas futuras.
 - Para empezar de cero: DevTools → Application → Local Storage → borrar la clave `diario-de-estudio-sesiones`.
