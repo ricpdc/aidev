@@ -3,33 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Diario de Estudio</title>
+  <title>Diario de estudio</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="contenedor">
-    <h1>Diario de Estudio</h1>
+    <header class="cabecera">
+      <h1>Diario de estudio</h1>
+    </header>
 
     <section class="racha" aria-label="Racha actual">
-      <p class="racha-numero"><span id="racha">0</span> 🔥</p>
-      <p class="racha-texto" id="racha-texto">días seguidos</p>
-      <p class="racha-mejor">Mejor racha: <strong id="mejor-racha">0</strong></p>
-      <p class="racha-semana">Esta semana: <strong id="minutos-semana">0 min</strong></p>
-      <p class="racha-mes">Este mes: <strong id="minutos-mes">0 min</strong></p>
+      <div class="racha-sello">
+        <p class="racha-numero"><span id="racha">0</span><svg class="fuego" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5Z"/>
+          </svg></p>
+        <p class="racha-texto" id="racha-texto">días seguidos</p>
+      </div>
+
+      <dl class="racha-datos">
+        <div>
+          <dt>Mejor racha</dt>
+          <dd><strong id="mejor-racha">0</strong></dd>
+        </div>
+        <div>
+          <dt>Esta semana</dt>
+          <dd id="minutos-semana">0 min</dd>
+        </div>
+        <div>
+          <dt>Este mes</dt>
+          <dd id="minutos-mes">0 min</dd>
+        </div>
+      </dl>
     </section>
 
-    <section class="tarjeta">
+    <section class="tarjeta tarjeta--formulario">
       <h2 id="titulo-formulario">Nueva sesión</h2>
 
       <form id="form-sesion">
-        <label for="fecha">Fecha</label>
-        <input type="date" id="fecha" required>
+        <div class="campos">
+          <div class="campo">
+            <label for="fecha">Fecha</label>
+            <input type="date" id="fecha" required>
+          </div>
 
-        <label for="tema">Tema</label>
-        <input type="text" id="tema" placeholder="Ej.: Matemáticas" required>
+          <div class="campo">
+            <label for="minutos">Minutos</label>
+            <input type="number" id="minutos" min="1" step="1" placeholder="Ej.: 45" required>
+          </div>
 
-        <label for="minutos">Minutos</label>
-        <input type="number" id="minutos" min="1" step="1" placeholder="Ej.: 45" required>
+          <div class="campo campo--ancho">
+            <label for="tema">Tema</label>
+            <input type="text" id="tema" placeholder="Ej.: Matemáticas" required>
+          </div>
+        </div>
 
         <p class="error" id="error" role="alert" hidden></p>
 
@@ -38,7 +64,7 @@
       </form>
     </section>
 
-    <section class="tarjeta">
+    <section class="tarjeta tarjeta--lista">
       <h2>Sesiones</h2>
       <p class="vacio" id="vacio">Todavía no hay sesiones. ¡Añade la primera!</p>
       <ul class="lista" id="lista-sesiones"></ul>

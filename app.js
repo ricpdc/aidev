@@ -1,6 +1,20 @@
 // Clave con la que guardamos las sesiones en el navegador.
 const CLAVE = "diario-de-estudio-sesiones";
 
+// Iconos dibujados en SVG: así se ven igual en cualquier sistema y encajan
+// con el estilo de cuaderno (los emoji cambian de forma según el dispositivo).
+const ICONO_EDITAR = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+  <path d="M4 20h4L19.5 8.5a2.5 2.5 0 0 0-3.5-3.5L4.5 16.5 4 20Z"/>
+  <path d="M14.5 6.5l3.5 3.5"/>
+</svg>`;
+
+const ICONO_BORRAR = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+  <path d="M4 7h16"/>
+  <path d="M9.5 7V4.5h5V7"/>
+  <path d="M6.5 7l.9 12.5h9.2L17.5 7"/>
+  <path d="M10 11v5.5M14 11v5.5"/>
+</svg>`;
+
 const formulario = document.getElementById("form-sesion");
 const campoFecha = document.getElementById("fecha");
 const campoTema = document.getElementById("tema");
@@ -280,16 +294,16 @@ function render() {
 
     const botonEditar = document.createElement("button");
     botonEditar.type = "button";
-    botonEditar.className = "boton-icono";
-    botonEditar.textContent = "✏️";
+    botonEditar.className = "boton-icono boton-editar";
+    botonEditar.innerHTML = ICONO_EDITAR;
     botonEditar.title = "Editar sesión";
     botonEditar.setAttribute("aria-label", `Editar la sesión de ${sesion.tema}`);
     botonEditar.addEventListener("click", () => entrarEnEdicion(sesion));
 
     const botonBorrar = document.createElement("button");
     botonBorrar.type = "button";
-    botonBorrar.className = "boton-icono";
-    botonBorrar.textContent = "🗑️";
+    botonBorrar.className = "boton-icono boton-borrar";
+    botonBorrar.innerHTML = ICONO_BORRAR;
     botonBorrar.title = "Borrar sesión";
     botonBorrar.setAttribute("aria-label", `Borrar la sesión de ${sesion.tema}`);
     botonBorrar.addEventListener("click", () => borrarSesion(sesion));
