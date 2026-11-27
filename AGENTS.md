@@ -16,13 +16,19 @@ Web estática para registrar sesiones de estudio y motivarse viendo la racha de 
  
 ## Datos 
 - localStorage, clave `diario-de-estudio-sesiones`: array de `{ fecha: "AAAA-MM-DD", tema, minutos, creadoEn }` (`creadoEn` ordena las sesiones del mismo día). 
-- Si cambias la forma de los datos, mantén compatibilidad con lo ya guardado o el usuario perderá sus sesiones. 
- 
-## Fechas y racha (fácil equivocarse) 
+- Si cambias la forma de los datos, mantén compatibilidad con lo ya guardado o el usuario perderá sus sesiones.
+
+## Edición y borrado
+- Editar reutiliza el formulario principal (título, botón y «Cancelar»); no añadas un modal salvo que se pida.
+- Borrar siempre pide confirmación con `confirm()`, mostrando tema y fecha.
+- No añadas `id` a las sesiones ni cambies el formato guardado: edita y borra usando la referencia al objeto de `sesiones`. Editar conserva `creadoEn`.
+
+## Fechas y racha (fácil equivocarse)
 - Trabaja siempre con la fecha local del usuario. Nunca uses `toISOString()` ni `new Date("AAAA-MM-DD")`: se interpretan en UTC y desplazan el día. 
 - Racha = días consecutivos con al menos 1 sesión que terminan hoy. Si hoy no hay sesión pero ayer sí, la racha sigue viva y se cuenta desde ayer. 
 - Varias sesiones el mismo día cuentan como un solo día. Las fechas futuras no suman.
 - Mejor racha = máximo de días consecutivos con sesión. Se calcula al vuelo desde las sesiones (no se guarda), incluye la racha activa y excluye las fechas futuras.
+- Total semanal = suma de minutos de las sesiones de la semana actual (lunes a domingo, hora local). Se calcula al vuelo, no se guarda, excluye fechas futuras y se muestra en horas y minutos.
 
 ## Forma de trabajar 
 - Haz solo lo que se pide: no añadas funcionalidades por tu cuenta. 
@@ -45,4 +51,6 @@ Web estática para registrar sesiones de estudio y motivarse viendo la racha de 
 ## Verificación 
 - No hay tests ni lint. Probar abriendo `index.html` en el navegador.
 - Comprobar que «Mejor racha» coincide con el tramo más largo y que una fecha futura no la aumenta.
+- Probar editar (incluido cancelar) y borrar (aceptar y rechazar); las dos rachas deben recalcularse.
+- Comprobar que «Esta semana» incluye lunes y domingo, ignora fechas futuras y se actualiza al editar o borrar.
 - Para empezar de cero: DevTools → Application → Local Storage → borrar la clave `diario-de-estudio-sesiones`.

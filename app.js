@@ -9,10 +9,17 @@ const mensajeError = document.getElementById("error");
 const rachaNumero = document.getElementById("racha");
 const rachaTexto = document.getElementById("racha-texto");
 const mejorRachaNumero = document.getElementById("mejor-racha");
+const minutosSemana = document.getElementById("minutos-semana");
 const lista = document.getElementById("lista-sesiones");
 const vacio = document.getElementById("vacio");
+const tituloFormulario = document.getElementById("titulo-formulario");
+const botonGuardar = document.getElementById("boton-guardar");
+const botonCancelar = document.getElementById("boton-cancelar");
 
 let sesiones = cargarSesiones();
+
+// Sesión que se está editando, o null si el formulario crea una nueva.
+let sesionEnEdicion = null;
 
 // --- Fechas (siempre en hora local) ---
 
@@ -122,6 +129,61 @@ function esDiaSiguiente(diaAnterior, dia) {
   return fechaATexto(fecha) === dia;
 }
 
+// --- Total de la semana ---
+
+// Días (texto "AAAA-MM-DD") de la semana actual, de lunes a domingo.
+function diasDeEstaSemana() {
+  const dias = new Set();
+  const lunes = textoAFecha(fechaDeHoy());
+
+  // getDay() devuelve domingo = 0. Lo pasamos a lunes = 0.
+  lunes.setDate(lunes.getDate() - ((lunes.getDay() + 6) % 7));
+
+  for (let i = 0; i < 7; i++) {
+    dias.add(fechaATexto(lunes));
+    lunes.setDate(lunes.getDate() + 1);
+  }
+
+  return dias;
+}
+
+function calcularMinutosSemana() {
+  const dias = diasDeEstaSemana();
+  const hoy = fechaDeHoy();
+
+  let total = 0;
+
+  for (const sesion of sesiones) {
+    // Solo sesiones de esta semana y que ya hayan ocurrido.
+    if (!dias.has(sesion.fecha) || sesion.fecha > hoy) {
+      continue;
+    }
+
+    const minutos = Number(sesion.minutos);
+    if (Number.isFinite(minutos)) {
+      total += minutos;
+    }
+  }
+
+  return total;
+}
+
+// Convierte minutos a un texto legible: "0 min", "45 min", "1 h" o "2 h 15 min".
+function formatearDuracion(total) {
+  const horas = Math.floor(total / 60);
+  const minutos = total % 60;
+
+  if (horas === 0) {
+    return `${minutos} min`;
+  }
+
+  if (minutos === 0) {
+    return `${horas} h`;
+  }
+
+  return `${horas} h ${minutos} min`;
+}
+
 // --- Almacenamiento ---
 
 function cargarSesiones() {
@@ -149,6 +211,7 @@ function render() {
   rachaNumero.textContent = racha;
   rachaTexto.textContent = racha === 1 ? "día seguido" : "días seguidos";
   mejorRachaNumero.textContent = calcularMejorRacha();
+  minutosSemana.textContent = formatearDuracion(calcularMinutosSemana());
 
   // De la más reciente a la más antigua. Si dos sesiones son del mismo
   // día, primero la que se añadió más tarde.
@@ -166,6 +229,7 @@ function render() {
     item.className = "sesion";
 
     const info = document.createElement("div");
+    info.className = "sesion-info";
 
     const tema = document.createElement("p");
     tema.className = "sesion-tema";
@@ -181,11 +245,81 @@ function render() {
     minutos.className = "sesion-minutos";
     minutos.textContent = `${sesion.minutos} min`;
 
-    item.append(info, minutos);
+    // Botones para editar y borrar esta sesión concreta.
+    const acciones = document.createElement("div");
+    acciones.className = "sesion-acciones";
+
+    const botonEditar = document.createElement("button");
+    botonEditar.type = "button";
+    botonEditar.className = "boton-icono";
+    botonEditar.textContent = "✏️";
+    botonEditar.title = "Editar sesión";
+    botonEditar.setAttribute("aria-label", `Editar la sesión de ${sesion.tema}`);
+    botonEditar.addEventListener("click", () => entrarEnEdicion(sesion));
+
+    const botonBorrar = document.createElement("button");
+    botonBorrar.type = "button";
+    botonBorrar.className = "boton-icono";
+    botonBorrar.textContent = "🗑️";
+    botonBorrar.title = "Borrar sesión";
+    botonBorrar.setAttribute("aria-label", `Borrar la sesión de ${sesion.tema}`);
+    botonBorrar.addEventListener("click", () => borrarSesion(sesion));
+
+    acciones.append(botonEditar, botonBorrar);
+
+    item.append(info, minutos, acciones);
     lista.append(item);
   }
 
   vacio.hidden = ordenadas.length > 0;
+}
+
+// --- Editar y borrar sesiones ---
+
+function entrarEnEdicion(sesion) {
+  sesionEnEdicion = sesion;
+
+  campoFecha.value = sesion.fecha;
+  campoTema.value = sesion.tema;
+  campoMinutos.value = sesion.minutos;
+  mensajeError.hidden = true;
+
+  tituloFormulario.textContent = "Editar sesión";
+  botonGuardar.textContent = "Guardar cambios";
+  botonCancelar.hidden = false;
+
+  formulario.scrollIntoView({ behavior: "smooth", block: "center" });
+  campoTema.focus();
+}
+
+// Vuelve al modo "nueva sesión" y limpia el formulario.
+function salirDeEdicion() {
+  sesionEnEdicion = null;
+
+  formulario.reset();
+  campoFecha.value = fechaDeHoy();
+  mensajeError.hidden = true;
+
+  tituloFormulario.textContent = "Nueva sesión";
+  botonGuardar.textContent = "Añadir sesión";
+  botonCancelar.hidden = true;
+}
+
+function borrarSesion(sesion) {
+  const pregunta = `¿Borrar la sesión «${sesion.tema}» del ${formatearFecha(sesion.fecha)}?`;
+  if (!confirm(pregunta)) {
+    return;
+  }
+
+  // Si estábamos editando justo esa sesión, salimos del modo edición.
+  if (sesionEnEdicion === sesion) {
+    salirDeEdicion();
+  }
+
+  // Quitamos exactamente esa sesión (misma referencia de objeto).
+  sesiones = sesiones.filter((s) => s !== sesion);
+  guardarSesiones();
+  render();
 }
 
 // --- Formulario ---
@@ -205,20 +339,27 @@ formulario.addEventListener("submit", (evento) => {
 
   mensajeError.hidden = true;
 
-  sesiones.push({
-    fecha,
-    tema,
-    minutos,
-    creadoEn: Date.now(),
-  });
+  if (sesionEnEdicion) {
+    // Actualizamos la sesión existente (conservamos su creadoEn).
+    sesionEnEdicion.fecha = fecha;
+    sesionEnEdicion.tema = tema;
+    sesionEnEdicion.minutos = minutos;
+  } else {
+    sesiones.push({
+      fecha,
+      tema,
+      minutos,
+      creadoEn: Date.now(),
+    });
+  }
 
   guardarSesiones();
   render();
-
-  formulario.reset();
-  campoFecha.value = fechaDeHoy();
+  salirDeEdicion();
   campoTema.focus();
 });
+
+botonCancelar.addEventListener("click", salirDeEdicion);
 
 // --- Arranque ---
 

@@ -74,6 +74,12 @@ h2 {
   opacity: 0.92;
 }
 
+.racha-semana {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  opacity: 0.92;
+}
+
 /* Tarjetas */
 
 .tarjeta {
@@ -136,6 +142,17 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+.boton-secundario {
+  margin-top: 10px;
+  color: var(--acento);
+  background: transparent;
+  border: 1px solid var(--borde);
+}
+
+.boton-secundario:hover {
+  background: #eef0ff;
+}
+
 .error {
   margin: 12px 0 0;
   color: var(--error);
@@ -168,6 +185,11 @@ button:focus-visible {
   border-bottom: none;
 }
 
+.sesion-info {
+  flex: 1;
+  min-width: 0;
+}
+
 .sesion-tema {
   margin: 0;
   font-weight: 600;
@@ -188,6 +210,36 @@ button:focus-visible {
   background: #eef0ff;
   padding: 4px 10px;
   border-radius: 999px;
+}
+
+.sesion-acciones {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+/* Botones de icono: sobrescriben los estilos generales de button. */
+.boton-icono {
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--texto);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.boton-icono:hover {
+  background: #eef0ff;
+}
+
+.boton-icono:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 1px;
 }
 
 .vacio {

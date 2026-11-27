@@ -14,10 +14,11 @@
       <p class="racha-numero"><span id="racha">0</span> 🔥</p>
       <p class="racha-texto" id="racha-texto">días seguidos</p>
       <p class="racha-mejor">Mejor racha: <strong id="mejor-racha">0</strong></p>
+      <p class="racha-semana">Esta semana: <strong id="minutos-semana">0 min</strong></p>
     </section>
 
     <section class="tarjeta">
-      <h2>Nueva sesión</h2>
+      <h2 id="titulo-formulario">Nueva sesión</h2>
 
       <form id="form-sesion">
         <label for="fecha">Fecha</label>
@@ -31,7 +32,8 @@
 
         <p class="error" id="error" role="alert" hidden></p>
 
-        <button type="submit">Añadir sesión</button>
+        <button type="submit" id="boton-guardar">Añadir sesión</button>
+        <button type="button" class="boton-secundario" id="boton-cancelar" hidden>Cancelar</button>
       </form>
     </section>
 
